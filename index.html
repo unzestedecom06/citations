@@ -1,0 +1,257 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Citations ORGA'NOTION</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Patrick+Hand&family=Indie+Flower&family=Handlee&family=Shadows+Into+Light&family=Kalam:wght@400;700&family=Coming+Soon&family=Gloria+Hallelujah&family=Nothing+You+Could+Do&family=Architects+Daughter&display=swap" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background: transparent;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .widget {
+      width: 100%;
+      max-width: 340px;
+      aspect-ratio: 1 / 1;
+      background: #f8c74b;
+      color: #fffbe2;
+      border-radius: 7px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+
+    .guillemet {
+      font-family: Georgia, serif;
+      font-size: 50px;
+      font-weight: bold;
+      line-height: 0.8;
+    }
+
+    .citation {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 34px;
+      line-height: 1.15;
+      overflow-wrap: anywhere;
+      padding: 8px 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .pied {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .changer {
+      width: 37px;
+      height: 37px;
+      border: none;
+      border-radius: 50%;
+      background: #fffbe2;
+      color: #bd8a15;
+      font-size: 25px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      line-height: 1;
+    }
+
+    .changer:hover {
+      transform: rotate(25deg);
+    }
+
+    .changer:focus-visible {
+      outline: 2px solid #fffbe2;
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 260px) {
+      .widget { padding: 15px; }
+      .guillemet { font-size: 38px; }
+      .changer { width: 30px; height: 30px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="widget">
+    <div class="guillemet" aria-hidden="true">“</div>
+
+    <div class="citation" id="citation" aria-live="polite"></div>
+
+    <div class="pied">
+      <button class="changer" id="changer"
+              aria-label="Afficher une autre citation"
+              title="Une autre citation">↻</button>
+    </div>
+  </div>
+
+  <script>
+    const citations = [
+      "Fais de la place pour ce qui te fait du bien.",
+      "Les idées prennent vie quand on ose commencer.",
+      "Un petit pas reste un pas en avant.",
+      "La créativité aime les chemins de traverse.",
+      "Prends le temps de savourer tes petites victoires.",
+      "Le meilleur moment pour créer, c'est maintenant.",
+      "Tu n'as pas besoin de tout prévoir pour avancer.",
+      "Fais confiance à ton propre rythme.",
+      "Les belles idées ont parfois besoin de silence.",
+      "Ose faire les choses à ta façon.",
+      "Il y a de la magie dans les choses simples.",
+      "Aujourd'hui est une nouvelle page à écrire.",
+      "N'oublie pas de profiter du chemin.",
+      "Tu as le droit de changer d'avis et de direction.",
+      "Les petits détails font les grandes différences.",
+      "Crée quelque chose qui te ressemble.",
+      "Ta curiosité est une jolie force.",
+      "Fais moins, mais fais-le avec intention.",
+      "Les pauses font aussi partie du progrès.",
+      "Un peu de soleil change parfois toute une journée.",
+      "Laisse de la place aux belles surprises.",
+      "Tu peux être ambitieuse et prendre ton temps.",
+      "Le plaisir de créer compte autant que le résultat.",
+      "N'attends pas que tout soit parfait.",
+      "Une idée toute simple peut tout changer.",
+      "Les journées ordinaires cachent de jolis moments.",
+      "Garde du temps pour ce qui te fait sourire.",
+      "Le courage commence parfois par un petit oui.",
+      "Cultive les projets qui te donnent de l'énergie.",
+      "Ce qui te rend différente fait aussi ta richesse.",
+      "Il n'y a pas qu'une seule façon de réussir.",
+      "Apprends, essaie, recommence, amuse-toi.",
+      "Les grandes aventures commencent souvent doucement.",
+      "Ton imagination mérite de prendre de la place.",
+      "La simplicité peut être une vraie signature.",
+      "Accorde-toi le droit de ralentir.",
+      "Fais aujourd'hui une chose qui te rend fière.",
+      "Les meilleures idées arrivent parfois sans prévenir.",
+      "Choisis ce qui a du sens pour toi.",
+      "Mets un peu de joie dans ce que tu construis."
+    ];
+
+    const polices = [
+      '"Caveat", cursive',
+      '"Patrick Hand", cursive',
+      '"Indie Flower", cursive',
+      '"Handlee", cursive',
+      '"Shadows Into Light", cursive',
+      '"Kalam", cursive',
+      '"Coming Soon", cursive',
+      '"Gloria Hallelujah", cursive',
+      '"Nothing You Could Do", cursive',
+      '"Architects Daughter", cursive'
+    ];
+
+    const element = document.getElementById('citation');
+    const bouton = document.getElementById('changer');
+
+    function dateParis() {
+      const morceaux = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Europe/Paris',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      }).formatToParts(new Date());
+
+      const valeur = type =>
+        Number(morceaux.find(p => p.type === type).value);
+
+      return {
+        annee: valeur('year'),
+        mois: valeur('month'),
+        jour: valeur('day')
+      };
+    }
+
+    function numeroDuJour() {
+      const date = dateParis();
+      return Math.floor(
+        Date.UTC(date.annee, date.mois - 1, date.jour) / 86400000
+      );
+    }
+
+    let jourActuel = numeroDuJour();
+    let index = ((jourActuel % citations.length) + citations.length)
+      % citations.length;
+
+    function ajusterTaille() {
+      const widget = document.querySelector('.widget');
+      const taille = widget.clientWidth;
+      let police = Math.min(39, Math.max(21, taille * 0.11));
+
+      element.style.fontSize = police + 'px';
+
+      while (
+        police > 17 &&
+        element.scrollHeight > element.clientHeight + 2
+      ) {
+        police -= 1;
+        element.style.fontSize = police + 'px';
+      }
+    }
+
+    function afficherCitation() {
+      element.textContent = citations[index];
+
+      // Chaque citation a sa propre écriture manuscrite.
+      element.style.fontFamily = polices[index % polices.length];
+
+      ajusterTaille();
+
+      // Ajuste aussi après le chargement des polices.
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(ajusterTaille);
+      }
+    }
+
+    bouton.addEventListener('click', () => {
+      index = (index + 1) % citations.length;
+      afficherCitation();
+    });
+
+    // Vérifie régulièrement si un nouveau jour a commencé à Paris.
+    setInterval(() => {
+      const nouveauJour = numeroDuJour();
+
+      if (nouveauJour !== jourActuel) {
+        jourActuel = nouveauJour;
+        index = ((jourActuel % citations.length) + citations.length)
+          % citations.length;
+        afficherCitation();
+      }
+    }, 30000);
+
+    window.addEventListener('resize', ajusterTaille);
+
+    afficherCitation();
+  </script>
+</body>
+</html>
